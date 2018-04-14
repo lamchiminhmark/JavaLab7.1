@@ -76,43 +76,37 @@ implements MapADT<K,V> {
        //  After the key-value pair has been inserted, check to see if any
        //  adjustments are necessary
        if(parent==null){
-	   // adjustment case I:  this is the root, so paint it black
-	   // TODO:  implement this case
+    	   color = BLACK;
        }
        else if(color==RED && parent.color==RED){
 	   // consecutive red nodes -- do something!
 
 	   // first, find the uncle
-	   RBTreeMap<K,V> uncle = null;
-	   if(parent.key.compareTo(gran.key)<0)
-	       uncle = gran.right;
-	   else
-	       uncle = gran.left;
-	   
-	   if(uncle.color==RED){
-	       // adjustment case II:  the uncle is red, so recolor
-	       // TODO:  Implement this case
-	   }
-	   else {
-	       // adjustment case II:  the uncle is black, so rotate
-	       // TODO:  Implement this case
-	       /*
-		 You need to determine which rotation case (LL, LR, RL, RR)
-		 to apply.  For example, if this.key < parent.key < gran.key,
-		 this is the LL case; if this.key < parent.key and
-		 gran.key < parent.key, this is the RL case
-	       */
-
-	       /*
-		 Then apply the appropriate rotation:
-		 LL: single right rotation
-		 LR: double right rotation (a left rotation at p followed 
-                     by a right rotation at g)
-		 RR: single left rotation
-		 RL: double left rotation (a right rotation at p followed
-                     by a left rotation at g)
-	       */
-	   }
+    	   RBTreeMap<K,V> uncle = null;
+    	   if(parent.key.compareTo(gran.key)<0)
+    		   uncle = gran.right;
+		   else
+		       uncle = gran.left;
+		   
+		   if(uncle.color==RED){
+			   uncle.color = BLACK;
+			   parent.color = BLACK;
+			   gran.color = RED;
+		   } else {
+			   int compSelfParent = this.key.compareTo(parent.key);
+			   int compParentGran = parent.key.compareTo(gran.key);
+		       if ( compSelfParent < 0 && compParentGran < 0) {
+		    	   rotateRight(gran);
+		       } else if (compSelfParent > 0 && compParentGran > 0) {
+		    	   rotateLeft(gran);
+		       } else if (compSelfParent < 0 && compParentGran > 0) {
+		    	   rotateRight(parent);
+		    	   rotateLeft(gran);
+		       } else {
+		    	   rotateLeft(parent);
+		    	   rotateRight(gran);
+		       }
+		   }
        }
        // return this key's previous value
        return rvalue;
